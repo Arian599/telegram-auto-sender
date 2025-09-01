@@ -34,6 +34,6 @@ jobs:
       env:
         API_ID: ${{ secrets.API_ID }}
         API_HASH: ${{ secrets.API_HASH }}
-        PHONE_NUMBER: ${{ secrets.PHONE_NUMBER }}
+        STRING_SESSION: ${{ secrets.STRING_SESSION }}
       run: |
         timeout 21600 python main.py || echo "Bot completed 6-hour cycle"
