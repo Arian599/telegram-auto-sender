@@ -1,0 +1,39 @@
+name: Telegram Auto Sender Bot
+
+on:
+  schedule:
+    # Run every 6 hours to stay within GitHub Actions limits
+    - cron: '0 */6 * * *'
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  send-messages:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360  # 6 hours max
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+        
+    - name: Cache Telegram session
+      uses: actions/cache@v3
+      with:
+        path: session_name.session
+        key: telegram-session-${{ secrets.PHONE_NUMBER }}
+        
+    - name: Run Telegram Bot
+      env:
+        API_ID: ${{ secrets.API_ID }}
+        API_HASH: ${{ secrets.API_HASH }}
+        PHONE_NUMBER: ${{ secrets.PHONE_NUMBER }}
+      run: |
+        timeout 21600 python main.py || echo "Bot completed 6-hour cycle"
