@@ -1,5 +1,6 @@
 import asyncio
 from telethon import TelegramClient
+from telethon.sessions import StringSession
 import random
 from datetime import datetime
 import logging
@@ -8,7 +9,7 @@ import os
 # API credentials from environment variables (secure)
 api_id = int(os.getenv('API_ID', '20802334'))
 api_hash = os.getenv('API_HASH', '87651f947f76694298cb6db07bf901e0')
-phone_number = os.getenv('PHONE_NUMBER', '+989135944117')
+string_session = os.getenv('STRING_SESSION', '')
 
 # Target group chat ID
 chat_id = -1002307699887
@@ -25,13 +26,13 @@ logging.basicConfig(
 )
 
 async def send_periodic_message():
-    # Create Telegram client
-    client = TelegramClient('session_name', api_id, api_hash)
+    # Create Telegram client using string session
+    client = TelegramClient(StringSession(string_session), api_id, api_hash)
     
     try:
-        # Connect to Telegram
-        await client.start(phone=phone_number)
-        logging.info("Successfully connected to Telegram!")
+        # Connect to Telegram (no phone verification needed)
+        await client.start()
+        logging.info("Successfully connected to Telegram using string session!")
         
         # Verify access to the group
         try:
